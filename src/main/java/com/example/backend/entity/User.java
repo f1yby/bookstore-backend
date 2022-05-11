@@ -13,14 +13,17 @@ import javax.persistence.*;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "writer")
+@Table(name = "user")
 @JsonIgnoreProperties(value = {"handler", "hibernateLazyInitializer", "fieldHandler"})
-public class Writer {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public Integer wid;
+    private Integer uid;
 
-    private String name;
+    private String username;
 
+    private String password;
+    @ManyToOne
+    private UserPrivilege userPrivilege;
 
 }

@@ -10,7 +10,6 @@ import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -32,10 +31,9 @@ public class Book {
 
     private String coverSrc;
 
-    public String description;
+    private String description;
 
-    @ManyToMany
-    public Set<Writer> writers;
+    private String writers;
 
     @Override
     public boolean equals(Object o) {
