@@ -7,6 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 
 public interface UserPrivilegeRepository extends CrudRepository<UserPrivilege, Integer> {
-    @Query("SELECT up FROM UserPrivilege up WHERE up.privilege=:privilege")
-    Optional<UserPrivilege> getByPrivilege(String privilege);
+
+    UserPrivilege getUserPrivilegeByPrivilege(String privilege);
 }

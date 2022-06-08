@@ -1,5 +1,6 @@
 package com.example.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -14,19 +16,17 @@ import java.util.Set;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "cart")
+@Table(name = "orders")
 @JsonIgnoreProperties(value = {"handler", "hibernateLazyInitializer", "fieldHandler"})
-public class Cart {
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer cid;
+    private Integer oid;
 
-    @OneToOne
+    @ManyToOne
+    @JsonIgnore
     private User user;
-
-    @ManyToMany
+    @OneToMany
     @ToString.Exclude
-    private Set<Book> book;
-
-
+    private List<OrderItem> orderItems;
 }

@@ -23,17 +23,15 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer bid;
 
-    private Double price;
 
-    private Integer count;
-
-    private String bookName;
-
-    private String coverSrc;
-
-    private String description;
-
+    private String isbn;
+    private String name;
+    private String type;
     private String writers;
+    private Double price;
+    private String description;
+    private Integer inventory;
+    private String image;
 
     @Override
     public boolean equals(Object o) {

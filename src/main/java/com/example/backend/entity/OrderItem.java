@@ -14,17 +14,23 @@ import javax.persistence.*;
 @ToString
 @RequiredArgsConstructor
 @Entity
-@Table(name = "user_privilege")
+@Table(name = "order_item")
 @JsonIgnoreProperties(value = {"handler", "hibernateLazyInitializer", "fieldHandler"})
-public class UserPrivilege {
-
+public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer oiid;
+
+    private Integer count;
+
     @JsonIgnore
-    private Integer upid;
+    private boolean isActivated;
 
-    private String privilege;
+    @ManyToOne()
+    private Book book;
 
-
-
+    @ManyToOne()
+    @ToString.Exclude
+    @JsonIgnore
+    private User user;
 }
