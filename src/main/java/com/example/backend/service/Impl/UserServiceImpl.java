@@ -6,13 +6,19 @@ import com.example.backend.entity.User;
 import com.example.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.SessionScope;
 
 import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.Optional;
 
 @Service
+@SessionScope
 public class UserServiceImpl implements UserService {
+
+    Time time;
     @Autowired
     private UserDao userDao;
 
@@ -50,7 +56,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<String> getPermissionByUsernameAndPassword(String username, String password) {
         Optional<User> user = userDao.findUserByUsernameAndPassword(username, password);
+        time = Time.valueOf(LocalTime.now());
         return user.map(User::getPermission);
+    }
+
+    @Override
+    public Optional<String> logOut() {
+        return Optional.of(String.valueOf(Time.valueOf(LocalTime.now()).getTime() - time.getTime()));
     }
 
     @Override

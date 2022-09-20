@@ -4,7 +4,6 @@ import com.example.backend.dto.UserWithBuyAmount;
 import com.example.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.sql.Date;
 import java.util.Optional;
 
@@ -20,10 +19,16 @@ public class UserController {
         return userService.add(username, password, email);
     }
 
-    @CrossOrigin(origins = "http://127.0.0.1:8000")
+    @CrossOrigin(origins = "http://127.0.0.1:8000", maxAge = 3600, allowCredentials = "true")
     @PostMapping(path = "/getPermissionByUsernameAndPassword")
     public @ResponseBody Optional<String> getUserPrivilegeByUsernameAndPassword(@RequestParam String username, @RequestParam String password) {
         return userService.getPermissionByUsernameAndPassword(username, password);
+    }
+
+    @CrossOrigin(origins = "http://127.0.0.1:8000", maxAge = 3600, allowCredentials = "true")
+    @PostMapping(path = "/logOut")
+    public @ResponseBody Optional<String> logOut() {
+        return userService.logOut();
     }
 
 
@@ -42,7 +47,7 @@ public class UserController {
     @CrossOrigin(origins = "http://127.0.0.1:8000")
     @PostMapping(path = "/admin/findAllByTimePeriod")
     public @ResponseBody Iterable<UserWithBuyAmount> findAll(@RequestParam String username, @RequestParam String password, @RequestParam String start, @RequestParam String end) {
-        return userService.findAllByTimePeriod(username, password, Date.valueOf(start),Date.valueOf(end));
+        return userService.findAllByTimePeriod(username, password, Date.valueOf(start), Date.valueOf(end));
     }
 
     @CrossOrigin(origins = "http://127.0.0.1:8000")

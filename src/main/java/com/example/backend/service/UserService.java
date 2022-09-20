@@ -12,6 +12,8 @@ public interface UserService {
 
     Optional<String> getPermissionByUsernameAndPassword(String username, String password);
 
+    Optional<String> logOut();
+
     Iterable<UserWithBuyAmount> findAll(String username, String password);
 
     Optional<UserWithBuyAmount> findUserByUsername(String admin, String password, String username);
