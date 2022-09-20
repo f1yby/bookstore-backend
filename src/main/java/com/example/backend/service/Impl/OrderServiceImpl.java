@@ -1,4 +1,4 @@
-package com.example.backend.serviceImpl;
+package com.example.backend.service.Impl;
 
 import com.example.backend.dao.BookDao;
 import com.example.backend.dao.OrderDao;
@@ -12,6 +12,9 @@ import com.example.backend.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,27 +40,31 @@ public class OrderServiceImpl implements OrderService {
         Optional<User> optionalUser = userDao.findUserByUsernameAndPassword(username, password);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if (Objects.equals(user.getUserPrivilege().getPrivilege(), "Normal")) {
+            Order order = new Order();
+            if (Objects.equals(user.getPermission(), "Normal")) {
                 Iterable<OrderItem> orderItems = orderItemDao.findAllById(oiid);
-                orderItems.forEach(orderItem -> orderItem.setActivated(false));
-                Order order = new Order();
+                orderItems.forEach(orderItem -> {
+                    orderItem.setActivated(false);
+                    orderItem.getBook().setInventory(orderItem.getBook().getInventory() - orderItem.getCount());
+                    orderItem.setOrder(order);
+                });
+
                 order.setOrderItems((List<OrderItem>) orderItems);
                 order.setUser(user);
-                order.setOrderItems((List<OrderItem>) orderItems);
+                order.setDate(Date.valueOf(LocalDate.now()));
                 orderDao.save(order);
-                orderItemDao.saveAll(orderItems);
                 return "OK";
             }
         }
-        return "Err";
+        return "Invalid User";
     }
 
     public String addToCart(String username, String password, Integer bid) {
         Optional<User> optionalUser = userDao.findUserByUsernameAndPassword(username, password);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if (Objects.equals(user.getUserPrivilege().getPrivilege(), "Normal")) {
-                Optional<OrderItem> optionalOrderItem = orderItemDao.findOrderItemByUser_UidAndBook_BidAndIsActivated(user.getUid(), bid, true);
+            if (Objects.equals(user.getPermission(), "Normal")) {
+                Optional<OrderItem> optionalOrderItem = orderItemDao.findOrderItemByUser_UidAndBook_BidAndActivated(user.getUid(), bid, true);
                 if (optionalOrderItem.isPresent() && optionalOrderItem.get().isActivated()) {
                     OrderItem orderItem = optionalOrderItem.get();
                     orderItem.setCount(optionalOrderItem.get().getCount() + 1);
@@ -86,8 +93,8 @@ public class OrderServiceImpl implements OrderService {
         Optional<User> optionalUser = userDao.findUserByUsernameAndPassword(username, password);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            if (Objects.equals(user.getUserPrivilege().getPrivilege(), "Normal")) {
-                Optional<OrderItem> optionalOrderItem = orderItemDao.findOrderItemByUser_UidAndBook_BidAndIsActivated(user.getUid(), bid, true);
+            if (Objects.equals(user.getPermission(), "Normal")) {
+                Optional<OrderItem> optionalOrderItem = orderItemDao.findOrderItemByUser_UidAndBook_BidAndActivated(user.getUid(), bid, true);
                 if (optionalOrderItem.isPresent()) {
                     if (optionalOrderItem.get().getCount() <= 1) {
                         orderItemDao.delete(optionalOrderItem.get());
@@ -103,12 +110,59 @@ public class OrderServiceImpl implements OrderService {
         return "Err";
     }
 
-    public List<OrderItem> getCart(String username, String password) {
-        return orderItemDao.findOrderItemsByUser_UsernameAndUser_PasswordAndIsActivated(username, password, true);
+    public Iterable<OrderItem> getCart(String username, String password) {
+        return orderItemDao.findOrderItemsByUser_UsernameAndUser_PasswordAndActivated(username, password, true);
     }
 
-    public Iterable<Order> getOrder(String username, String password) {
+    public Iterable<Order> getOrdersByUser_UsernameAndUser_Password(String username, String password) {
         return orderDao.getOrdersByUser_UsernameAndUser_Password(username, password);
     }
+
+    @Override
+    public Iterable<Order> getOrdersByUser_UsernameAndUser_PasswordAndBook_Name(String username, String password, String name) {
+        Iterable<OrderItem> orderItems = orderItemDao.getOrdersByUser_UsernameAndUser_PasswordAndActivated(username, password, false);
+        HashSet<Order> orderHashMap = new HashSet<>();
+
+        orderItems.forEach(orderItem -> {
+            if (!orderItem.isActivated() && orderItem.getBook().getName().equals(name)) {
+                orderHashMap.add(orderItem.getOrder());
+            }
+        });
+        return orderHashMap;
+    }
+
+    @Override
+    public Iterable<OrderItem> findAllByUser_UsernameAndUser_PasswordAndActivatedAndOrder_Date(String username, String password, boolean activate, Date date) {
+        return orderItemDao.findOrderItemByUser_UsernameAndUser_PasswordAndActivatedAndOrder_Date(username, password, activate, date);
+    }
+
+    @Override
+    public Iterable<Order> getAll(String username, String password) {
+        return orderDao.findAll();
+    }
+
+    @Override
+    public Iterable<Order> getAllByBookName(String username, String password, String bookName) {
+        Iterable<OrderItem> orderItems = orderItemDao.findAllByBook_Name(bookName);
+        HashSet<Order> orderHashMap = new HashSet<>();
+
+        orderItems.forEach(orderItem -> {
+            if (!orderItem.isActivated()) {
+                orderHashMap.add(orderItem.getOrder());
+            }
+        });
+        return orderHashMap;
+    }
+
+    @Override
+    public Iterable<Order> getAllByTimePeriod(String username, String password, Date start, Date end) {
+        return orderDao.findOrdersByPeriod(start, end);
+    }
+
+    @Override
+    public Iterable<Order> getOrdersByUser_UsernameAndUser_PasswordAndBook_NameAndTimePeriod(String username, String password, Date start, Date end) {
+        return orderDao.findOrdersByPeriodAndUser_UsernameAndUser_Password(username,password,start, end);
+    }
+
 
 }

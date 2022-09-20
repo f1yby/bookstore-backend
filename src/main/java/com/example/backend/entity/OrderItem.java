@@ -24,12 +24,17 @@ public class OrderItem {
     private Integer count;
 
     @JsonIgnore
-    private boolean isActivated;
+    private boolean activated;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.REFRESH, optional = false)
     private Book book;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JsonIgnore
+    private Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @ToString.Exclude
     @JsonIgnore
     private User user;

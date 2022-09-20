@@ -1,19 +1,20 @@
 package com.example.backend.repository;
 
-import com.example.backend.entity.Book;
 import com.example.backend.entity.OrderItem;
-import com.example.backend.entity.User;
-import org.aspectj.weaver.ast.Or;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.List;
+import java.util.Date;
 import java.util.Optional;
 
 public interface OrderItemRepository extends CrudRepository<OrderItem, Integer> {
-    Optional<OrderItem> findOrderItemByBook_BidAndUser_UsernameAndUser_Password(Integer bid, String username, String password);
 
-    Optional<OrderItem> findOrderItemByUser_UidAndBook_BidAndIsActivated(Integer uid, Integer bid,boolean isActivate);
+    Optional<OrderItem> findOrderItemByUser_UidAndBook_BidAndActivated(Integer uid, Integer bid, boolean activate);
 
-    List<OrderItem> findOrderItemsByUser_UsernameAndUser_PasswordAndIsActivated(String username, String password,boolean isActivated);
+    Iterable<OrderItem> findAllByUser_UsernameAndUser_PasswordAndActivatedAndOrder_Date(String username, String password, boolean activate, Date date);
+
+    Iterable<OrderItem> findOrderItemsByUser_UsernameAndUser_PasswordAndActivated(String username, String password, boolean isActivated);
+
+    Iterable<OrderItem> findOrderItemsByBook_Name(String bookName);
+
+    Iterable<OrderItem> getOrdersByUser_UsernameAndUser_PasswordAndActivated(String username, String password, boolean activated);
 }

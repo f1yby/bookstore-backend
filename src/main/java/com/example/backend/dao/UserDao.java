@@ -9,5 +9,10 @@ public interface UserDao {
 
     Optional<User> findUserByUsername(String username);
 
+    Optional<User> findById(Integer id);
+
+    Iterable<User> findAll();
+
+
     void save(User user);
 }

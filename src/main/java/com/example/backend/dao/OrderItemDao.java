@@ -1,23 +1,27 @@
 package com.example.backend.dao;
 
 import com.example.backend.entity.OrderItem;
-import org.springframework.data.repository.CrudRepository;
 
-import java.util.List;
+import java.sql.Date;
 import java.util.Optional;
 
 public interface OrderItemDao {
-    Optional<OrderItem> findOrderItemByBook_BidAndUser_UsernameAndUser_Password(Integer bid, String username, String password);
 
-    Optional<OrderItem> findOrderItemByUser_UidAndBook_BidAndIsActivated(Integer uid, Integer bid, boolean isActivate);
+    Optional<OrderItem> findOrderItemByUser_UidAndBook_BidAndActivated(Integer uid, Integer bid, boolean Activate);
 
-    List<OrderItem> findOrderItemsByUser_UsernameAndUser_PasswordAndIsActivated(String username, String password, boolean isActivated);
+    Iterable<OrderItem> findOrderItemsByUser_UsernameAndUser_PasswordAndActivated(String username, String password, boolean isActivated);
 
-    Iterable<OrderItem> findAllById(List<Integer> oiid);
+    Iterable<OrderItem> findOrderItemByUser_UsernameAndUser_PasswordAndActivatedAndOrder_Date(String username, String password, boolean activate, Date date);
 
-    void saveAll(Iterable<OrderItem> orderItems);
+    Iterable<OrderItem> findAllById(Iterable<Integer> oiid);
 
     void save(OrderItem orderItem);
 
     void delete(OrderItem orderItem);
+
+    Iterable<OrderItem> findAllByBook_Name(String bookName);
+
+    Iterable<OrderItem> findAll();
+
+    Iterable<OrderItem> getOrdersByUser_UsernameAndUser_PasswordAndActivated(String username, String password, boolean activated);
 }

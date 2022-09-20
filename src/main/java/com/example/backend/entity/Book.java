@@ -1,20 +1,21 @@
 package com.example.backend.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @Entity
 @Table(name = "book")
 @JsonIgnoreProperties(value = {"handler", "hibernateLazyInitializer", "fieldHandler"})
@@ -28,21 +29,44 @@ public class Book {
     private String name;
     private String type;
     private String writers;
-    private Double price;
+    private BigDecimal price;
     private String description;
     private Integer inventory;
     private String image;
+    private boolean activated;
 
     @Override
     public boolean equals(Object o) {
+        if (o == null || o.getClass() != getClass() || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Book book = (Book) o;
         return bid != null && Objects.equals(bid, book.bid);
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_bid")
+    @ToString.Exclude
+    @JsonIgnore
+    private Set<OrderItem> orderItem;
+
+    public Book() {
+
     }
+
+    protected Book(Book book) {
+        bid = book.bid;
+        name = book.name;
+        isbn = book.isbn;
+        type = book.type;
+        writers = book.writers;
+        price = book.price;
+        description = book.description;
+        inventory = book.inventory;
+        image = book.image;
+        activated = book.activated;
+        orderItem = book.orderItem;
+    }
+
 }

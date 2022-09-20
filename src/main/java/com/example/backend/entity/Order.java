@@ -8,8 +8,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.sql.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -23,10 +23,14 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer oid;
 
-    @ManyToOne
+    private Date date;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    private User user;
-    @OneToMany
     @ToString.Exclude
+    private User user;
+    @OneToMany(cascade = CascadeType.ALL)
+    @ToString.Exclude
+    @JoinColumn(name = "order_oid")
     private List<OrderItem> orderItems;
 }
