@@ -29,7 +29,7 @@ public class Order {
     @JsonIgnore
     @ToString.Exclude
     private User user;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @ToString.Exclude
     @JoinColumn(name = "order_oid")
     private List<OrderItem> orderItems;

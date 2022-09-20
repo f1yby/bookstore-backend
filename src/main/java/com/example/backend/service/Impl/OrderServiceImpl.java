@@ -11,6 +11,8 @@ import com.example.backend.entity.User;
 import com.example.backend.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.time.LocalDate;
@@ -32,7 +34,7 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private BookDao bookDao;
 
-
+    @Transactional(propagation = Propagation.REQUIRED)
     public String checkOut(String username, String password, List<Integer> oiid) {
         if (oiid.isEmpty()) {
             return null;
@@ -42,16 +44,18 @@ public class OrderServiceImpl implements OrderService {
             User user = optionalUser.get();
             Order order = new Order();
             if (Objects.equals(user.getPermission(), "Normal")) {
+                order.setUser(user);
+                order.setDate(Date.valueOf(LocalDate.now()));
+                orderDao.save(order);
                 Iterable<OrderItem> orderItems = orderItemDao.findAllById(oiid);
                 orderItems.forEach(orderItem -> {
                     orderItem.setActivated(false);
                     orderItem.getBook().setInventory(orderItem.getBook().getInventory() - orderItem.getCount());
                     orderItem.setOrder(order);
+                    orderItemDao.save(orderItem);
                 });
 
                 order.setOrderItems((List<OrderItem>) orderItems);
-                order.setUser(user);
-                order.setDate(Date.valueOf(LocalDate.now()));
                 orderDao.save(order);
                 return "OK";
             }
@@ -161,7 +165,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Iterable<Order> getOrdersByUser_UsernameAndUser_PasswordAndBook_NameAndTimePeriod(String username, String password, Date start, Date end) {
-        return orderDao.findOrdersByPeriodAndUser_UsernameAndUser_Password(username,password,start, end);
+        return orderDao.findOrdersByPeriodAndUser_UsernameAndUser_Password(username, password, start, end);
     }
 
 
