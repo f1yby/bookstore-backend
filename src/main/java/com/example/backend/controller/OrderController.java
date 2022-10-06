@@ -1,24 +1,37 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.CheckOutData;
 import com.example.backend.entity.Order;
 import com.example.backend.entity.OrderItem;
 import com.example.backend.service.OrderService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
-import java.util.List;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping(path = "/order")
 public class OrderController {
     @Autowired
     OrderService orderService;
+    @Autowired
+    private KafkaTemplate<Object, Object> template;
+
 
     @CrossOrigin(origins = "http://127.0.0.1:8000")
     @PostMapping(path = "/checkOut")
-    public @ResponseBody String checkOut(@RequestParam String username, @RequestParam String password, @RequestParam List<Integer> oiid) {
-        return orderService.checkOut(username, password, oiid);
+    public @ResponseBody String checkOut(@RequestParam String username, @RequestParam String password, @RequestParam ArrayList<Integer> oiid) throws JsonProcessingException {
+        CheckOutData checkOutData = new CheckOutData(username, password, oiid);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(checkOutData);
+        template.send("order", json);
+//        System.console().printf("sended\n");
+//        template.send("order", "Hello");
+        return "Ok";
     }
 
     @CrossOrigin(origins = "http://127.0.0.1:8000")
@@ -50,6 +63,7 @@ public class OrderController {
     public @ResponseBody Iterable<Order> getOrdersByUser_UsernameAndUser_PasswordAnd_BookName(@RequestParam String username, @RequestParam String password, @RequestParam String bookName) {
         return orderService.getOrdersByUser_UsernameAndUser_PasswordAndBook_Name(username, password, bookName);
     }
+
     @CrossOrigin(origins = "http://127.0.0.1:8000")
     @PostMapping(path = "/getOrdersByUser_UsernameAndUser_PasswordAndOrder_Date")
     public @ResponseBody Iterable<Order> getOrdersByUser_UsernameAndUser_PasswordAnd_BookName(@RequestParam String username, @RequestParam String password, @RequestParam String start, @RequestParam String end) {

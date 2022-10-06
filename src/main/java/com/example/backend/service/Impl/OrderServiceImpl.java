@@ -4,6 +4,7 @@ import com.example.backend.dao.BookDao;
 import com.example.backend.dao.OrderDao;
 import com.example.backend.dao.OrderItemDao;
 import com.example.backend.dao.UserDao;
+import com.example.backend.dto.CheckOutData;
 import com.example.backend.entity.Book;
 import com.example.backend.entity.Order;
 import com.example.backend.entity.OrderItem;
@@ -35,7 +36,10 @@ public class OrderServiceImpl implements OrderService {
     private BookDao bookDao;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public String checkOut(String username, String password, List<Integer> oiid) {
+    public String checkOut(CheckOutData checkOutData) {
+        List<Integer> oiid = checkOutData.getOiid();
+        String username = checkOutData.getUsername();
+        String password = checkOutData.getPassword();
         if (oiid.isEmpty()) {
             return null;
         }
