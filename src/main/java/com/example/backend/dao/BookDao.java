@@ -10,5 +10,6 @@ public interface BookDao {
     Iterable<Book> findAll();
 
     Optional<Book> findById(Integer bid);
+
     void save(Book book);
 }

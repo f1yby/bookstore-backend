@@ -48,7 +48,7 @@ public class BookWithSell extends Book {
         super(book);
         sell = 0;
         book.getOrderItem().forEach(orderItem -> {
-            if (!orderItem.isActivated() && orderItem.getOrder().getDate().before(end) && !orderItem.getOrder().getDate().before(start)&& Objects.equals(orderItem.getUser().getUsername(), username) && Objects.equals(orderItem.getUser().getPassword(), password)) {
+            if (!orderItem.isActivated() && orderItem.getOrder().getDate().before(end) && !orderItem.getOrder().getDate().before(start) && Objects.equals(orderItem.getUser().getUsername(), username) && Objects.equals(orderItem.getUser().getPassword(), password)) {
                 sell += orderItem.getCount();
             }
         });

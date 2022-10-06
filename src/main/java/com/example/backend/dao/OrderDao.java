@@ -12,7 +12,7 @@ public interface OrderDao {
 
     Iterable<Order> findAll();
 
-    Iterable<Order> findOrdersByPeriod(Date start,Date end);
+    Iterable<Order> findOrdersByPeriod(Date start, Date end);
 
     Iterable<Order> findOrdersByPeriodAndUser_UsernameAndUser_Password(String username, String password, Date start, Date end);
 }

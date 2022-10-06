@@ -24,7 +24,6 @@ class BookDaoImpl implements BookDao {
     }
 
 
-
     @Override
     public Optional<Book> findById(Integer bid) {
         return bookRepository.findById(bid);

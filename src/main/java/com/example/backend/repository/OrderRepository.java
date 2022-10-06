@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface OrderRepository extends CrudRepository<Order, Integer> {
     List<Order> getOrdersByUser_UsernameAndUser_Password(String username, String password);
-    List<Order> getOrdersByDateBetween(Date start,Date end);
+
+    List<Order> getOrdersByDateBetween(Date start, Date end);
 
     Iterable<Order> findOrdersByUserUsernameAndUser_PasswordAndDateBetween(String username, String password, Date start, Date end);
 }
