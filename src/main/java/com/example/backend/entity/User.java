@@ -13,7 +13,7 @@ import java.util.Set;
 @Setter
 @ToString
 @Entity
-@Table(name = "user")
+@Table(name = "users")
 @JsonIgnoreProperties(value = {"handler", "hibernateLazyInitializer", "fieldHandler"})
 public class User {
     @Id
