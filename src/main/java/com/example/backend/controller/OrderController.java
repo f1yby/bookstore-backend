@@ -29,8 +29,6 @@ public class OrderController {
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(checkOutData);
         template.send("order", json);
-//        System.console().printf("sended\n");
-//        template.send("order", "Hello");
         return "Ok";
     }
 
