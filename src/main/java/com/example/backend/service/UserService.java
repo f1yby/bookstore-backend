@@ -1,10 +1,11 @@
 package com.example.backend.service;
 
 import com.example.backend.dto.UserWithBuyAmount;
+import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.Optional;
-
+@Service
 public interface UserService {
     String add(String username, String password, String email);
 

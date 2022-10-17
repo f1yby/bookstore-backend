@@ -3,9 +3,10 @@ package com.example.backend.service;
 import com.example.backend.dto.CheckOutData;
 import com.example.backend.entity.Order;
 import com.example.backend.entity.OrderItem;
+import org.springframework.stereotype.Service;
 
 import java.sql.Date;
-
+@Service
 public interface OrderService {
     String checkOut(CheckOutData checkOutData);
 

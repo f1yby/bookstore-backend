@@ -1,6 +1,6 @@
 package com.example.backend.listener;
 
-import com.example.backend.config.WebSocketServer;
+import com.example.backend.websocket.WebSocketServer;
 import com.example.backend.dto.CheckOutData;
 import com.example.backend.dto.CheckOutResult;
 import com.example.backend.service.OrderService;
