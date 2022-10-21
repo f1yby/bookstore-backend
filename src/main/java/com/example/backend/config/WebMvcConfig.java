@@ -1,6 +1,7 @@
 package com.example.backend.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -8,7 +9,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedMethods("*").allowedOrigins("http://localhost:8000").allowCredentials(true).exposedHeaders("").maxAge(3600);
+        registry.addMapping("/**")
+                .allowedOriginPatterns("*")
+                .allowedMethods("*")
+                .allowedHeaders("*")
+                .exposedHeaders(HttpHeaders.SET_COOKIE)
+                .allowCredentials(true).maxAge(1800);
     }
 
 }
