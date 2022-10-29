@@ -14,13 +14,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class WebSocketServer {
 
     public WebSocketServer() {
-        //每当有一个连接，都会执行一次构造方法
-        System.out.println("新的连接。。。");
     }
 
     private static final AtomicInteger COUNT = new AtomicInteger();
 
-    private static final ConcurrentHashMap<String, Session> SESSIONS = new ConcurrentHashMap<>();
+        private static final ConcurrentHashMap<String, Session> SESSIONS = new ConcurrentHashMap<>();
 
     public void sendMessage(Session toSession, String message) {
         if (toSession != null) {
@@ -53,22 +51,19 @@ public class WebSocketServer {
             return;
         }
         SESSIONS.put(userId, session);
-        COUNT.incrementAndGet();
-        System.out.println(userId + "上线了，当前在线人数：" + COUNT);
-
-
     }
 
     @OnClose
     public void onClose(@PathParam("userId") String userId) {
+        if (SESSIONS.get(userId) != null) {
+            return;
+        }
         SESSIONS.remove(userId);
         COUNT.decrementAndGet();
-        System.out.println(userId + "下线了，当前在线人数：" + COUNT);
     }
 
     @OnError
     public void onError(Session ignored, Throwable throwable) {
-        System.out.println("发生错误");
         throwable.printStackTrace();
     }
 }
