@@ -27,8 +27,7 @@ public class OrderController {
     public @ResponseBody String checkOut(@RequestParam String username, @RequestParam String password, @RequestParam ArrayList<Integer> oiid) throws JsonProcessingException {
         CheckOutData checkOutData = new CheckOutData(username, password, oiid);
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(checkOutData);
-        template.send("order", json);
+        template.send("order", objectMapper.writeValueAsString(checkOutData));
         return "Ok";
     }
 
