@@ -19,13 +19,15 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     Time time;
+
+    User user;
     @Autowired
     private UserDao userDao;
 
     @Override
     public String add(String username, String password, String email) {
         Optional<User> optionalUser = userDao.findUserByUsername(username);
-        if (!optionalUser.isPresent()) {
+        if (optionalUser.isEmpty()) {
             User user = new User();
             user.setPassword(password);
             user.setUsername(username);
@@ -57,6 +59,7 @@ public class UserServiceImpl implements UserService {
     public Optional<String> getPermissionByUsernameAndPassword(String username, String password) {
         Optional<User> user = userDao.findUserByUsernameAndPassword(username, password);
         time = Time.valueOf(LocalTime.now());
+        user.ifPresent(value -> this.user = value);
         return user.map(User::getPermission);
     }
 

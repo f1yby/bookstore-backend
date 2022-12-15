@@ -5,16 +5,25 @@ import com.example.backend.dao.OrderDao;
 import com.example.backend.dao.OrderItemDao;
 import com.example.backend.dao.UserDao;
 import com.example.backend.dto.CheckOutData;
+import com.example.backend.dto.function.SumBook;
 import com.example.backend.entity.Book;
 import com.example.backend.entity.Order;
 import com.example.backend.entity.OrderItem;
 import com.example.backend.entity.User;
 import com.example.backend.service.OrderService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -142,6 +151,28 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Iterable<OrderItem> findAllByUser_UsernameAndUser_PasswordAndActivatedAndOrder_Date(String username, String password, boolean activate, Date date) {
         return orderItemDao.findOrderItemByUser_UsernameAndUser_PasswordAndActivatedAndOrder_Date(username, password, activate, date);
+    }
+
+    @Override
+    public BigDecimal sumPrice(Integer oid) {
+        Optional<Order> order = orderDao.findById(oid);
+        if (order.isPresent()) {
+            RestTemplate rest = new RestTemplate();
+            ObjectMapper objectMapper = new ObjectMapper();
+            final BigDecimal[] sum = {BigDecimal.ZERO};
+            order.get().getOrderItems().forEach(item -> {
+                try {
+                    ResponseEntity<String> result = rest.exchange(RequestEntity.post(new URI("http://localhost:8081/sum")).body(objectMapper.writeValueAsString(new SumBook(item.getBook().getPrice(), item.getCount()))), String.class);
+                    sum[0] = sum[0].add(objectMapper.readValue(Objects.requireNonNull(result.getBody()).substring(1, result.getBody().length() - 1), BigDecimal.class));
+                } catch (RuntimeException | URISyntaxException | JsonProcessingException ignored) {
+                }
+            });
+
+            return sum[0];
+        } else {
+            return BigDecimal.valueOf(0);
+        }
+
     }
 
     @Override

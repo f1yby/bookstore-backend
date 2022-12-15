@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 
@@ -47,6 +48,11 @@ public class OrderController {
     @PostMapping(path = "/getCart")
     public @ResponseBody Iterable<OrderItem> getCart(@RequestParam String username, @RequestParam String password) {
         return orderService.getCart(username, password);
+    }
+
+    @PostMapping(path = "/sumPrice")
+    public @ResponseBody BigDecimal sumPrice(@RequestParam Integer oid) {
+        return orderService.sumPrice(oid);
     }
 
     @CrossOrigin(origins = "http://127.0.0.1:8000")

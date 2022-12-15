@@ -4,6 +4,7 @@ import com.example.backend.entity.Order;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderDao {
     List<Order> getOrdersByUser_UsernameAndUser_Password(String username, String password);
@@ -15,4 +16,6 @@ public interface OrderDao {
     Iterable<Order> findOrdersByPeriod(Date start, Date end);
 
     Iterable<Order> findOrdersByPeriodAndUser_UsernameAndUser_Password(String username, String password, Date start, Date end);
+
+    Optional<Order> findById(Integer id);
 }

@@ -46,7 +46,7 @@ class BookDaoImpl implements BookDao {
             if (optionalBook.isPresent()) {
                 LOGGER.info(bid + " is in db");
                 ObjectMapper objectMapper = new ObjectMapper();
-                String json = null;
+                String json;
                 try {
                     json = objectMapper.writeValueAsString(optionalBook.get());
                 } catch (JsonProcessingException e) {

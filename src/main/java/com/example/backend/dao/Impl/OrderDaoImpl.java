@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class OrderDaoImpl implements OrderDao {
@@ -38,5 +39,9 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public Iterable<Order> findOrdersByPeriodAndUser_UsernameAndUser_Password(String username, String password, Date start, Date end) {
         return orderRepository.findOrdersByUserUsernameAndUser_PasswordAndDateBetween(username, password, start, end);
+    }
+
+    public Optional<Order> findById(Integer id) {
+        return orderRepository.findById(id);
     }
 }
